@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picnic math - calculators</title>
+<style>
+  :root { --accent: #c23b3b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: #f8f5f1; color: #2c2520; line-height: 1.55; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; color: var(--accent); }
+  .lede { margin: 0 0 14px; max-width: 640px; }
+  .note { background: #fff; border: 1px solid #e4d8cd; border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px; font-size: 0.9rem; margin: 0 0 28px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  section { background: #fff; border: 1px solid #e4d8cd; border-radius: 8px; padding: 20px 22px; }
+  h2 { font-size: 1.15rem; margin: 0 0 6px; }
+  .hint { font-size: 0.9rem; color: #8a7563; margin: 0 0 14px; }
+  label { display: block; font-size: 0.9rem; margin: 10px 0 3px; }
+  input { width: 100%; padding: 8px 10px; font-size: 1rem; border: 1px solid #cdbbab; border-radius: 5px; font-family: inherit; }
+  button { margin-top: 16px; width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; font-size: 1rem; cursor: pointer; font-family: inherit; }
+  button:hover { filter: brightness(1.08); }
+  .out { margin-top: 14px; font-size: 1rem; min-height: 1.4em; }
+  .out.err { color: #a32222; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; font-size: 0.85rem; color: #b3a496; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Picnic math</h1>
+  <p class="lede">The blanket names the spots, the basket names the feast, and the cooler names the ice. Exact arithmetic, every borrowed number labeled.</p>
+  <div class="note">Illustrative planning arithmetic only. Every spot, portion, box and pack coverage is a labeled default you can change; pack for the real day, the real appetites and the real weather.</div>
+  <div class="grid">
+    <section>
+      <h2>Spot plan</h2>
+      <p class="hint">The blanket names the spots.</p>
+      <label for="s-w">Blanket width (cm)</label>
+      <input id="s-w" type="number" value="200" min="0" step="0.5">
+      <label for="s-d">Blanket depth (cm)</label>
+      <input id="s-d" type="number" value="200" min="0" step="0.5">
+      <label for="s-s">Labeled spot (cm)</label>
+      <input id="s-s" type="number" value="60" min="0" step="1">
+      <button id="s-go">Mark the spots</button>
+      <div class="out" id="s-out"></div>
+    </section>
+    <section>
+      <h2>Basket plan</h2>
+      <p class="hint">The basket names the feast.</p>
+      <label for="b-h">Heads</label>
+      <input id="b-h" type="number" value="4" min="0" step="1">
+      <label for="b-g">Labeled portion (g a head)</label>
+      <input id="b-g" type="number" value="500" min="0" step="10">
+      <label for="b-b">Labeled packing box (g)</label>
+      <input id="b-b" type="number" value="1200" min="0" step="50">
+      <button id="b-go">Pack the basket</button>
+      <div class="out" id="b-out"></div>
+    </section>
+    <section>
+      <h2>Ice plan</h2>
+      <p class="hint">The cooler names the ice.</p>
+      <label for="i-c">Cooler size (L)</label>
+      <input id="i-c" type="number" value="24" min="0" step="0.5">
+      <label for="i-p">Labeled pack coverage (L a pack)</label>
+      <input id="i-p" type="number" value="10" min="0" step="0.5">
+      <button id="i-go">Count the ice packs</button>
+      <div class="out" id="i-out"></div>
+    </section>
+  </div>
+</main>
+<footer>Built by the app factory. <a href="index.html">About</a> &middot; <a href="https://github.com/iLanis-agent/picnicmath">Source</a></footer>
+<script src="engine.js"></script>
+<script>
+function num(id){ return parseFloat(document.getElementById(id).value); }
+function show(id, r, render){
+  var el = document.getElementById(id);
+  if (r.error) { el.textContent = r.error; el.classList.add('err'); }
+  else { el.textContent = render(r); el.classList.remove('err'); }
+}
+document.getElementById('s-go').addEventListener('click', function(){
+  var a=[num('s-w'),num('s-d'),num('s-s')];
+  show('s-out', PicnicMath.spotPlan.apply(null,a), function(r){ return PicnicMath.renderSpot.apply(null,[r].concat(a)); });
+});
+document.getElementById('b-go').addEventListener('click', function(){
+  var a=[num('b-h'),num('b-g'),num('b-b')];
+  show('b-out', PicnicMath.basketPlan.apply(null,a), function(r){ return PicnicMath.renderBasket.apply(null,[r].concat(a)); });
+});
+document.getElementById('i-go').addEventListener('click', function(){
+  var a=[num('i-c'),num('i-p')];
+  show('i-out', PicnicMath.icePlan.apply(null,a), function(r){ return PicnicMath.renderIce.apply(null,[r].concat(a)); });
+});
+</script>
+</body>
+</html>
